@@ -1,4 +1,4 @@
-package com.chunter.openmeteoweather.ui.theme
+package com.chunter.openmeteoweather.features.locationsearch.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
