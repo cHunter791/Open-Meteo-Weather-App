@@ -6,7 +6,16 @@ import kotlinx.coroutines.flow.StateFlow
 
 class LocationSearchViewModel : ViewModel() {
 
-    private val _state = MutableStateFlow(State("Donegall Square N, Belfast BT1 5GS"))
+    private val _state = MutableStateFlow(
+        State(
+            location = "Donegall Square N, Belfast BT1 5GS",
+            weatherResults = listOf(
+                WeatherResult("Temperature", "16C"),
+                WeatherResult("Apparent Temperature", "14C"),
+                WeatherResult("Wind", "13mph", "East"),
+            )
+        )
+    )
     val state: StateFlow<State>
         get() = _state
 
@@ -16,6 +25,13 @@ class LocationSearchViewModel : ViewModel() {
 
     data class State(
         val location: String = "",
+        val weatherResults: List<WeatherResult> = emptyList(),
+    )
+
+    data class WeatherResult(
+        val title: String,
+        val value: String,
+        val extraValue: String? = null,
     )
 
     sealed class Action {
