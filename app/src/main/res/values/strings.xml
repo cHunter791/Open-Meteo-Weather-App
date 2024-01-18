@@ -1,3 +1,7 @@
 <resources>
+
     <string name="app_name">OpenMeteoWeather</string>
+
+    <string name="button_label_submit">Submit</string>
+
 </resources>

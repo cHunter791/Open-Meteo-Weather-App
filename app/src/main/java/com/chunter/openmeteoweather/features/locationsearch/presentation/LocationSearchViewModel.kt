@@ -10,7 +10,15 @@ class LocationSearchViewModel : ViewModel() {
     val state: StateFlow<State>
         get() = _state
 
+    fun handleAction(action: Action) {
+
+    }
+
     data class State(
-        val location: String? = null
+        val location: String = "",
     )
+
+    sealed class Action {
+        data class SearchSubmitted(val searchString: String) : Action()
+    }
 }
