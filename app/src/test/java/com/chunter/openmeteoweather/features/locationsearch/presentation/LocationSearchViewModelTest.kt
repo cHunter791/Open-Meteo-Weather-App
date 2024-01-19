@@ -2,12 +2,15 @@ package com.chunter.openmeteoweather.features.locationsearch.presentation
 
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.GetWeatherForLocationUseCase
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.Weather
+import com.chunter.openmeteoweather.features.locationsearch.presentation.LocationSearchViewModel.State
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -46,12 +49,25 @@ class LocationSearchViewModelTest {
         coEvery { getWeatherForLocationUseCase(location) } returns weather
         every { weatherStateMapper.mapDomainToState(weather) } returns weatherResults
 
+        val results = mutableListOf<State>()
+        val job = launch(testDispatcher) {
+            objectUnderTest.state.toList(results)
+        }
+
         objectUnderTest.handleAction(LocationSearchViewModel.Action.SearchSubmitted(location))
 
+        assertEquals(State(), results[0])
+        assertEquals(State(isLoading = true, location = location), results[1])
         assertEquals(
-            objectUnderTest.state.value,
-            LocationSearchViewModel.State(location, weatherResults)
+            State(
+                isLoading = false,
+                location = location,
+                weatherResults = weatherResults,
+            ),
+            results[2]
         )
+
+        job.cancel()
     }
 
     @Test
@@ -62,11 +78,24 @@ class LocationSearchViewModelTest {
         coEvery { getWeatherForLocationUseCase(location) } throws mockk<Exception>()
         every { weatherStateMapper.mapDomainToState(weather) } returns weatherResults
 
+        val results = mutableListOf<State>()
+        val job = launch(testDispatcher) {
+            objectUnderTest.state.toList(results)
+        }
+
         objectUnderTest.handleAction(LocationSearchViewModel.Action.SearchSubmitted(location))
 
+        assertEquals(State(), results[0])
+        assertEquals(State(isLoading = true, location = location), results[1])
         assertEquals(
-            objectUnderTest.state.value,
-            LocationSearchViewModel.State(location, emptyList())
+            State(
+                isLoading = false,
+                location = location,
+                weatherResults = emptyList(),
+            ),
+            results[2]
         )
+
+        job.cancel()
     }
 }

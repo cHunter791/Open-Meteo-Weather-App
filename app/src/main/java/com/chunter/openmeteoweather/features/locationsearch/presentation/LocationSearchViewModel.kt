@@ -29,20 +29,30 @@ class LocationSearchViewModel @Inject constructor(
     }
 
     private fun performSearch(location: String) {
-        _state.value = state.value.copy(location = location)
+        _state.value = state.value.copy(
+            isLoading = true,
+            location = location
+        )
 
         viewModelScope.launch(defaultDispatcher) {
             try {
                 val weather = getWeatherForLocationUseCase(location)
                 val weatherResults = weatherStateMapper.mapDomainToState(weather)
-                _state.value = state.value.copy(weatherResults = weatherResults)
+                _state.value = state.value.copy(
+                    isLoading = false,
+                    weatherResults = weatherResults,
+                )
             } catch (exception: Exception) {
-                _state.value = state.value.copy(weatherResults = emptyList())
+                _state.value = state.value.copy(
+                    isLoading = false,
+                    weatherResults = emptyList(),
+                )
             }
         }
     }
 
     data class State(
+        val isLoading: Boolean = false,
         val location: String = "",
         val weatherResults: List<WeatherResult> = emptyList(),
     )
