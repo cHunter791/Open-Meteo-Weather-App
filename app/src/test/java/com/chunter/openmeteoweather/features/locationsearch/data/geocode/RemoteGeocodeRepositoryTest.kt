@@ -1,7 +1,7 @@
 package com.chunter.openmeteoweather.features.locationsearch.data.geocode
 
 import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.LatLng
-import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.NoGeocodeResultFound
+import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.NoGeocodeResultFoundException
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
@@ -55,7 +55,7 @@ class RemoteGeocodeRepositoryTest {
         assertEquals(LatLng(1.0, -1.0), actualResult)
     }
 
-    @Test(expected = NoGeocodeResultFound::class)
+    @Test(expected = NoGeocodeResultFoundException::class)
     fun `forwardGeocode when no results returned then exception thrown`() = runTest {
         val geocodeResponses: List<GeocodeResponse> = listOf()
 
@@ -89,7 +89,7 @@ class RemoteGeocodeRepositoryTest {
             assertEquals(LatLng(3.0, -3.0), actualResult)
         }
 
-    @Test(expected = NoGeocodeResultFound::class)
+    @Test(expected = NoGeocodeResultFoundException::class)
     fun `forwardGeocode when results returned with all null properties then exception thrown`() =
         runTest {
             val geocodeResponses: List<GeocodeResponse> = listOf(

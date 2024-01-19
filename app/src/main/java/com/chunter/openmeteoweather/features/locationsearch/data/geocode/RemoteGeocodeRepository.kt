@@ -2,7 +2,7 @@ package com.chunter.openmeteoweather.features.locationsearch.data.geocode
 
 import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.GeocodeRepository
 import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.LatLng
-import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.NoGeocodeResultFound
+import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.NoGeocodeResultFoundException
 
 class RemoteGeocodeRepository(
     private val geocodeApi: GeocodeApi,
@@ -21,7 +21,7 @@ class RemoteGeocodeRepository(
                 )
             }.first()
         } catch (noSuchElementException: NoSuchElementException) {
-            throw NoGeocodeResultFound(cause = noSuchElementException)
+            throw NoGeocodeResultFoundException(cause = noSuchElementException)
         }
     }
 }
