@@ -3,8 +3,9 @@ package com.chunter.openmeteoweather.features.locationsearch.data.weather
 import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.LatLng
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.Weather
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.WeatherRepository
+import javax.inject.Inject
 
-class RemoteWeatherRepository(
+class RemoteWeatherRepository @Inject constructor(
     private val weatherApi: WeatherApi,
     private val weatherDataMapper: WeatherDataMapper,
 ) : WeatherRepository {

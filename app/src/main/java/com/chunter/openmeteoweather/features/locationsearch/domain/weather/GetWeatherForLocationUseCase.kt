@@ -4,8 +4,9 @@ import com.chunter.openmeteoweather.core.logger.Level
 import com.chunter.openmeteoweather.core.logger.Logger
 import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.GeocodeRepository
 import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.NoGeocodeResultFoundException
+import javax.inject.Inject
 
-class GetWeatherForLocationUseCase(
+class GetWeatherForLocationUseCase @Inject constructor(
     private val logger: Logger,
     private val geocodeRepository: GeocodeRepository,
     private val weatherRepository: WeatherRepository,
