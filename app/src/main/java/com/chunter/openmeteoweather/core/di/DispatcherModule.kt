@@ -8,6 +8,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Qualifier
 
+/**
+ * To aid in testing, we inject [CoroutineDispatcher]s into our classes. By doing
+ * this we can use test dispatchers in our tests
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DispatcherModule {

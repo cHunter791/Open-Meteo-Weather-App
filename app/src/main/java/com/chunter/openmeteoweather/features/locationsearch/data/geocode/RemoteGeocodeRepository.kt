@@ -10,6 +10,11 @@ class RemoteGeocodeRepository @Inject constructor(
     private val geocodeApiKeyProvider: GeocodeApiKeyProvider,
 ) : GeocodeRepository {
 
+    /**
+     * Attempts to decode the supplied location into latitude and longitude
+     * values. If not latitude or longitude values can be found then [NoGeocodeResultFoundException]
+     * is thrown
+     */
     override suspend fun forwardGeocode(location: String): LatLng {
         return try {
             geocodeApi.forwardGeocode(

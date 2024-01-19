@@ -11,6 +11,11 @@ class WeatherStateMapper @Inject constructor(
     private val resources: Resources
 ) {
 
+    /**
+     * Takes the domain weather data and maps it to the state class for the location search screen.
+     * We attempt to map each property to the [LocationSearchViewModel.WeatherResult] class but if
+     * the domain data is `null` it will be omitted.
+     */
     fun mapDomainToState(weather: Weather): List<LocationSearchViewModel.WeatherResult> {
         return listOfNotNull(
             weather.temperature.toWeatherResult(R.string.title_temperature),
