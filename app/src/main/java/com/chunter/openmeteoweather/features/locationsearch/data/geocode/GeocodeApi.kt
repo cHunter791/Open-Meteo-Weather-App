@@ -9,5 +9,5 @@ interface GeocodeApi {
     suspend fun forwardGeocode(
         @Query("q") location: String,
         @Query("api_key") apiKey: String,
-    ): List<GeocodeResult>
+    ): List<GeocodeResponse>
 }

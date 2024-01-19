@@ -37,18 +37,18 @@ class RemoteGeocodeRepositoryTest {
 
     @Test
     fun `forwardGeocode when results returned then first value returned`() = runTest {
-        val geocodeResults: List<GeocodeResult> = listOf(
-            GeocodeResult(
+        val geocodeResponses: List<GeocodeResponse> = listOf(
+            GeocodeResponse(
                 latitude = 1.0,
                 longitude = -1.0,
             ),
-            GeocodeResult(
+            GeocodeResponse(
                 latitude = 2.0,
                 longitude = -2.0,
             )
         )
 
-        coEvery { geocodeApi.forwardGeocode(location, apiKey) } returns geocodeResults
+        coEvery { geocodeApi.forwardGeocode(location, apiKey) } returns geocodeResponses
 
         val actualResult = objectUnderTest.forwardGeocode(location)
 
@@ -57,9 +57,9 @@ class RemoteGeocodeRepositoryTest {
 
     @Test(expected = NoGeocodeResultFound::class)
     fun `forwardGeocode when no results returned then exception thrown`() = runTest {
-        val geocodeResults: List<GeocodeResult> = listOf()
+        val geocodeResponses: List<GeocodeResponse> = listOf()
 
-        coEvery { geocodeApi.forwardGeocode(location, apiKey) } returns geocodeResults
+        coEvery { geocodeApi.forwardGeocode(location, apiKey) } returns geocodeResponses
 
         objectUnderTest.forwardGeocode(location)
     }
@@ -67,22 +67,22 @@ class RemoteGeocodeRepositoryTest {
     @Test
     fun `forwardGeocode when results returned with null properties then non-null value returned`() =
         runTest {
-            val geocodeResults: List<GeocodeResult> = listOf(
-                GeocodeResult(
+            val geocodeResponses: List<GeocodeResponse> = listOf(
+                GeocodeResponse(
                     latitude = null,
                     longitude = -1.0,
                 ),
-                GeocodeResult(
+                GeocodeResponse(
                     latitude = 2.0,
                     longitude = null,
                 ),
-                GeocodeResult(
+                GeocodeResponse(
                     latitude = 3.0,
                     longitude = -3.0,
                 )
             )
 
-            coEvery { geocodeApi.forwardGeocode(location, apiKey) } returns geocodeResults
+            coEvery { geocodeApi.forwardGeocode(location, apiKey) } returns geocodeResponses
 
             val actualResult = objectUnderTest.forwardGeocode(location)
 
@@ -92,18 +92,18 @@ class RemoteGeocodeRepositoryTest {
     @Test(expected = NoGeocodeResultFound::class)
     fun `forwardGeocode when results returned with all null properties then exception thrown`() =
         runTest {
-            val geocodeResults: List<GeocodeResult> = listOf(
-                GeocodeResult(
+            val geocodeResponses: List<GeocodeResponse> = listOf(
+                GeocodeResponse(
                     latitude = null,
                     longitude = null,
                 ),
-                GeocodeResult(
+                GeocodeResponse(
                     latitude = null,
                     longitude = null,
                 )
             )
 
-            coEvery { geocodeApi.forwardGeocode(location, apiKey) } returns geocodeResults
+            coEvery { geocodeApi.forwardGeocode(location, apiKey) } returns geocodeResponses
 
             objectUnderTest.forwardGeocode(location)
         }
