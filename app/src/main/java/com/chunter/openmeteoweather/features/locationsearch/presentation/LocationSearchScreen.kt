@@ -66,7 +66,7 @@ private fun LocationSearchContentPreview() {
                 listOf(
                     LocationSearchViewModel.WeatherResult("Temperature", "16C"),
                     LocationSearchViewModel.WeatherResult("Apparent Temperature", "14C"),
-                    LocationSearchViewModel.WeatherResult("Wind", "13mph", "East"),
+                    LocationSearchViewModel.WeatherResult("Wind", "13mph"),
                 )
             ),
             onLocationSearchAction = {},

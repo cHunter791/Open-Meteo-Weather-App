@@ -2,8 +2,9 @@ package com.chunter.openmeteoweather.features.locationsearch.data.weather
 
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.Weather
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.WeatherValue
+import javax.inject.Inject
 
-class WeatherDataMapper {
+class WeatherDataMapper @Inject constructor() {
 
     fun mapDataToDomain(weatherResponse: WeatherResponse): Weather {
         return Weather(

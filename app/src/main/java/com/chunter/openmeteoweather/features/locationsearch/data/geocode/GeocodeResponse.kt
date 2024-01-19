@@ -3,8 +3,8 @@ package com.chunter.openmeteoweather.features.locationsearch.data.geocode
 import com.google.gson.annotations.SerializedName
 
 data class GeocodeResponse(
-    @SerializedName("latitude")
+    @SerializedName("lat")
     val latitude: Double?,
-    @SerializedName("longitude")
+    @SerializedName("lon")
     val longitude: Double?,
 )

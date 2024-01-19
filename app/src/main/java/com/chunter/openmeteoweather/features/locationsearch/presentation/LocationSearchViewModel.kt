@@ -1,13 +1,22 @@
 package com.chunter.openmeteoweather.features.locationsearch.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.chunter.openmeteoweather.core.di.DefaultDispatcher
+import com.chunter.openmeteoweather.features.locationsearch.domain.weather.GetWeatherForLocationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LocationSearchViewModel @Inject constructor() : ViewModel() {
+class LocationSearchViewModel @Inject constructor(
+    private val getWeatherForLocationUseCase: GetWeatherForLocationUseCase,
+    private val weatherStateMapper: WeatherStateMapper,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     private val _state = MutableStateFlow(State())
     val state: StateFlow<State>
@@ -20,14 +29,17 @@ class LocationSearchViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun performSearch(location: String) {
-        _state.value = State(
-            location = location,
-            weatherResults = listOf(
-                WeatherResult("Temperature", "16C"),
-                WeatherResult("Apparent Temperature", "14C"),
-                WeatherResult("Wind", "13mph", "East"),
-            ),
-        )
+        _state.value = state.value.copy(location = location)
+
+        viewModelScope.launch(defaultDispatcher) {
+            try {
+                val weather = getWeatherForLocationUseCase(location)
+                val weatherResults = weatherStateMapper.mapDomainToState(weather)
+                _state.value = state.value.copy(weatherResults = weatherResults)
+            } catch (exception: Exception) {
+                _state.value = state.value.copy(weatherResults = emptyList())
+            }
+        }
     }
 
     data class State(
@@ -38,7 +50,6 @@ class LocationSearchViewModel @Inject constructor() : ViewModel() {
     data class WeatherResult(
         val title: String,
         val value: String,
-        val extraValue: String? = null,
     )
 
     sealed class Action {

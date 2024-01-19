@@ -1,8 +1,9 @@
 package com.chunter.openmeteoweather.core.logger
 
 import android.util.Log
+import javax.inject.Inject
 
-class AndroidLogger : Logger {
+class AndroidLogger @Inject constructor() : Logger {
 
     override fun log(
         level: Level,

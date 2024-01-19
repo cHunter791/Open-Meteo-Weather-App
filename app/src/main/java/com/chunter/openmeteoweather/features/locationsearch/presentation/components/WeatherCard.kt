@@ -44,12 +44,6 @@ fun WeatherCard(
                 style = MaterialTheme.typography.displaySmall,
                 text = weatherResult.value,
             )
-            weatherResult.extraValue?.let { extraValue ->
-                Text(
-                    style = MaterialTheme.typography.bodyLarge,
-                    text = extraValue,
-                )
-            }
         }
     }
 }
@@ -62,20 +56,6 @@ private fun WeatherCardPreview() {
             weatherResult = LocationSearchViewModel.WeatherResult(
                 title = "Temperature",
                 value = "16C",
-            ),
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun WeatherCardExtraPreview() {
-    OpenMeteoWeatherTheme {
-        WeatherCard(
-            weatherResult = LocationSearchViewModel.WeatherResult(
-                title = "Wind",
-                value = "13mph",
-                extraValue = "East",
             ),
         )
     }
