@@ -24,6 +24,19 @@ Enter in an address and submit to retrieve the weather data currently at the loc
 * Rain
 * Cloud cover
 
+## Future Work
+
+Some additional functionality and work that could be included in the future
+
+* Retry button on error
+* Location search history
+* UI automation tests
+* If more features are developed, modularise the application
+* Better dependency version management
+* Code coverage reporting
+* Static code analysis reporting
+* Ktlint reporting
+
 ## Additional Commands
 
 In the terminal you can run the following commands
