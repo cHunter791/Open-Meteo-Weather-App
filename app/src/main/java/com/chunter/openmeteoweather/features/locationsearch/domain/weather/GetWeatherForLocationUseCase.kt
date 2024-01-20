@@ -17,19 +17,25 @@ class GetWeatherForLocationUseCase @Inject constructor(
             val latLng = geocodeRepository.forwardGeocode(location)
             weatherRepository.getWeatherData(latLng)
         } catch (noGeocodeResultFoundException: NoGeocodeResultFoundException) {
-            logger.log(
-                level = Level.Error,
-                message = noGeocodeResultFoundException.message ?: "Error retrieving geocode data",
+            logError(
                 exception = noGeocodeResultFoundException,
+                fallbackMessage = "Error retrieving geocode data",
             )
             throw noGeocodeResultFoundException
         } catch (exception: Exception) {
-            logger.log(
-                level = Level.Error,
-                message = exception.message ?: "Unknown error occurred retrieving weather data",
+            logError(
                 exception = exception,
+                fallbackMessage = "Unknown error occurred retrieving weather data",
             )
             throw exception
         }
+    }
+
+    private fun logError(exception: Exception, fallbackMessage: String) {
+        logger.log(
+            level = Level.Error,
+            message = exception.message ?: fallbackMessage,
+            exception = exception,
+        )
     }
 }

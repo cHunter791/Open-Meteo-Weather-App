@@ -1,25 +1,24 @@
 package com.chunter.openmeteoweather.features.locationsearch.presentation
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import com.chunter.openmeteoweather.core.ui.theme.LocalDimensions
+import com.chunter.openmeteoweather.R
 import com.chunter.openmeteoweather.core.ui.theme.OpenMeteoWeatherTheme
 import com.chunter.openmeteoweather.features.locationsearch.presentation.components.LocationSearchField
-import com.chunter.openmeteoweather.features.locationsearch.presentation.components.WeatherCard
+import com.chunter.openmeteoweather.features.locationsearch.presentation.components.WeatherList
 
 @Composable
 fun LocationSearchScreen(viewModel: LocationSearchViewModel) {
@@ -36,8 +35,6 @@ private fun LocationSearchContent(
     state: LocationSearchViewModel.State,
     onLocationSearchAction: (LocationSearchViewModel.Action) -> Unit,
 ) {
-    val weatherCardGridSpacing = LocalDimensions.current.weatherCardDimensions.gridSpacing
-
     Column {
         LocationSearchField(
             location = state.location,
@@ -47,23 +44,19 @@ private fun LocationSearchContent(
                 )
             },
         )
-        if (state.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
-        } else {
-            LazyVerticalStaggeredGrid(
-                modifier = Modifier.fillMaxWidth(),
-                columns = StaggeredGridCells.Fixed(2),
-                verticalItemSpacing = weatherCardGridSpacing,
-                horizontalArrangement = Arrangement.spacedBy(weatherCardGridSpacing),
-            ) {
-                items(state.weatherResults) { weatherResult ->
-                    WeatherCard(weatherResult = weatherResult)
-                }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            when {
+                state.isLoading -> CircularProgressIndicator()
+                state.errorMessage != null -> Text(
+                    style = MaterialTheme.typography.titleLarge,
+                    text = state.errorMessage,
+                    textAlign = TextAlign.Center
+                )
+
+                else -> WeatherList(weatherResults = state.weatherResults)
             }
         }
     }
@@ -93,6 +86,19 @@ private fun LocationSearchLoadingContentPreview() {
     OpenMeteoWeatherTheme {
         LocationSearchContent(
             state = LocationSearchViewModel.State(isLoading = true),
+            onLocationSearchAction = {},
+        )
+    }
+}
+
+@Preview(device = Devices.PIXEL_4, showSystemUi = true, showBackground = true)
+@Composable
+private fun LocationSearchErrorContentPreview() {
+    OpenMeteoWeatherTheme {
+        LocationSearchContent(
+            state = LocationSearchViewModel.State(
+                errorMessage = stringResource(id = R.string.message_internet_connection_error)
+            ),
             onLocationSearchAction = {},
         )
     }

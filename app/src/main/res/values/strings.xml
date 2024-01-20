@@ -11,4 +11,8 @@
     <string name="title_wind_speed">Wind Speed</string>
     <string name="title_wind_direction">Wind Direction</string>
 
+    <string name="message_no_location">Unable to find your location, try a different place!</string>
+    <string name="message_internet_connection_error">There was an issue with the internet connect, please try again</string>
+    <string name="message_unknown_error">Something went wrong, please try again</string>
+
 </resources>

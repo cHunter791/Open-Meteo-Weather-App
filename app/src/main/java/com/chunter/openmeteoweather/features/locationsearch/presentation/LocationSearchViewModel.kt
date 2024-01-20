@@ -31,7 +31,9 @@ class LocationSearchViewModel @Inject constructor(
     private fun performSearch(location: String) {
         _state.value = state.value.copy(
             isLoading = true,
-            location = location
+            location = location,
+            errorMessage = null,
+            weatherResults = emptyList(),
         )
 
         viewModelScope.launch(defaultDispatcher) {
@@ -46,6 +48,7 @@ class LocationSearchViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     isLoading = false,
                     weatherResults = emptyList(),
+                    errorMessage = weatherStateMapper.mapExceptionToErrorMessage(exception)
                 )
             }
         }
@@ -55,6 +58,7 @@ class LocationSearchViewModel @Inject constructor(
         val isLoading: Boolean = false,
         val location: String = "",
         val weatherResults: List<WeatherResult> = emptyList(),
+        val errorMessage: String? = null,
     )
 
     data class WeatherResult(

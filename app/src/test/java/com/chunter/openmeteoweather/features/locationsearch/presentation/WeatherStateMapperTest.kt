@@ -2,6 +2,7 @@ package com.chunter.openmeteoweather.features.locationsearch.presentation
 
 import android.content.res.Resources
 import com.chunter.openmeteoweather.R
+import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.NoGeocodeResultFoundException
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.Weather
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.WeatherValue
 import com.chunter.openmeteoweather.features.locationsearch.presentation.LocationSearchViewModel.WeatherResult
@@ -13,6 +14,8 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class WeatherStateMapperTest {
 
@@ -25,6 +28,10 @@ class WeatherStateMapperTest {
     private val cloudCoverTitle = "Cloud Cover"
     private val windSpeedTitle = "Wind Speed"
     private val windDirectionTitle = "Wind Direction"
+
+    private val noLocationMessage = "No Location"
+    private val noInternetMessage = "No Internet"
+    private val unknownMessage = "Unknown Error"
 
     private val defaultWeather: Weather = Weather(
         temperature = WeatherValue(-4f, "°C"),
@@ -49,6 +56,9 @@ class WeatherStateMapperTest {
         every { resources.getString(R.string.title_cloud_cover) } returns cloudCoverTitle
         every { resources.getString(R.string.title_wind_speed) } returns windSpeedTitle
         every { resources.getString(R.string.title_wind_direction) } returns windDirectionTitle
+        every { resources.getString(R.string.message_no_location) } returns noLocationMessage
+        every { resources.getString(R.string.message_internet_connection_error) } returns noInternetMessage
+        every { resources.getString(R.string.message_unknown_error) } returns unknownMessage
     }
 
     @Test
@@ -103,5 +113,31 @@ class WeatherStateMapperTest {
         assertTrue(
             weatherResults.contains(WeatherResult(windDirectionTitle, "267.0°"))
         )
+    }
+
+    @Test
+    fun `mapExceptionToErrorMessage given NoGeocodeResultFoundException returns correct error message`() {
+        val actualResult =
+            objectUnderTest.mapExceptionToErrorMessage(NoGeocodeResultFoundException())
+
+        assertEquals(noLocationMessage, actualResult)
+    }
+
+    @Test
+    fun `mapExceptionToErrorMessage given SocketTimeoutException or UnknownHostException returns correct error message`() {
+        var actualResult = objectUnderTest.mapExceptionToErrorMessage(SocketTimeoutException())
+
+        assertEquals(noInternetMessage, actualResult)
+
+        actualResult = objectUnderTest.mapExceptionToErrorMessage(UnknownHostException())
+
+        assertEquals(noInternetMessage, actualResult)
+    }
+
+    @Test
+    fun `mapExceptionToErrorMessage given Exception returns correct error message`() {
+        val actualResult = objectUnderTest.mapExceptionToErrorMessage(Exception())
+
+        assertEquals(unknownMessage, actualResult)
     }
 }

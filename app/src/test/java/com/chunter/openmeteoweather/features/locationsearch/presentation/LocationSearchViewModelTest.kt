@@ -57,7 +57,14 @@ class LocationSearchViewModelTest {
         objectUnderTest.handleAction(LocationSearchViewModel.Action.SearchSubmitted(location))
 
         assertEquals(State(), results[0])
-        assertEquals(State(isLoading = true, location = location), results[1])
+        assertEquals(
+            State(
+                isLoading = true,
+                location = location,
+                weatherResults = emptyList(),
+                errorMessage = null,
+            ), results[1]
+        )
         assertEquals(
             State(
                 isLoading = false,
@@ -73,10 +80,10 @@ class LocationSearchViewModelTest {
     @Test
     fun `Perform Search action when unsuccessful updates state with empty results`() = runTest {
         val location = "Test Location"
-        val weather = mockk<Weather>()
-        val weatherResults = mockk<List<LocationSearchViewModel.WeatherResult>>(relaxed = true)
-        coEvery { getWeatherForLocationUseCase(location) } throws mockk<Exception>()
-        every { weatherStateMapper.mapDomainToState(weather) } returns weatherResults
+        val exception = Exception()
+        val errorMessage = "Error Message"
+        coEvery { getWeatherForLocationUseCase(location) } throws exception
+        every { weatherStateMapper.mapExceptionToErrorMessage(exception) } returns errorMessage
 
         val results = mutableListOf<State>()
         val job = launch(testDispatcher) {
@@ -86,12 +93,20 @@ class LocationSearchViewModelTest {
         objectUnderTest.handleAction(LocationSearchViewModel.Action.SearchSubmitted(location))
 
         assertEquals(State(), results[0])
-        assertEquals(State(isLoading = true, location = location), results[1])
+        assertEquals(
+            State(
+                isLoading = true,
+                location = location,
+                weatherResults = emptyList(),
+                errorMessage = null,
+            ), results[1]
+        )
         assertEquals(
             State(
                 isLoading = false,
                 location = location,
                 weatherResults = emptyList(),
+                errorMessage = errorMessage,
             ),
             results[2]
         )

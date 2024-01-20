@@ -3,8 +3,11 @@ package com.chunter.openmeteoweather.features.locationsearch.presentation
 import android.content.res.Resources
 import androidx.annotation.StringRes
 import com.chunter.openmeteoweather.R
+import com.chunter.openmeteoweather.features.locationsearch.domain.geocode.NoGeocodeResultFoundException
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.Weather
 import com.chunter.openmeteoweather.features.locationsearch.domain.weather.WeatherValue
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class WeatherStateMapper @Inject constructor(
@@ -25,6 +28,14 @@ class WeatherStateMapper @Inject constructor(
             weather.windSpeed.toWeatherResult(R.string.title_wind_speed),
             weather.windDirection.toWeatherResult(R.string.title_wind_direction),
         )
+    }
+
+    fun mapExceptionToErrorMessage(exception: Exception): String {
+        return when (exception) {
+            is NoGeocodeResultFoundException -> resources.getString(R.string.message_no_location)
+            is SocketTimeoutException, is UnknownHostException -> resources.getString(R.string.message_internet_connection_error)
+            else -> resources.getString(R.string.message_unknown_error)
+        }
     }
 
     private fun WeatherValue?.toWeatherResult(@StringRes titleResId: Int): LocationSearchViewModel.WeatherResult? {
